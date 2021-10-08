@@ -13,18 +13,23 @@ import ShoppingCart from './components/ShoppingCart';
 function App() {
 	const { Provider } = CartContext;
 	const { push } = useHistory();
-
 	const [products] = useState(data);
-	const [cart, setCart] = useState([]);
+
+	const getLocalCart = localStorage.getItem('localCart');
+	const [cart, setCart] = useState(JSON.parse(getLocalCart));
 
 	const addItem = item => {
 		// add the given item to the cart
+		
+		localStorage.setItem("localCart", JSON.stringify([...cart, { ...item, cartId: Date.now() }]));
 		setCart([...cart, { ...item, cartId: Date.now() }]);
 	};
 
 	const removeItem = cartId => {
-		// setCart([]);
+
+		localStorage.setItem("localCart", JSON.stringify(cart.filter(item => item.cartId !== cartId)));
 		setCart(cart.filter(item => item.cartId !== cartId));
+		
 		push('/cart')
 	}
 
